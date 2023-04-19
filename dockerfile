@@ -1,4 +1,5 @@
 FROM python:3.9
+RUN pip install -r requirements.txt
 
 # Update packages and install required dependencies
 RUN apt-get update && \
