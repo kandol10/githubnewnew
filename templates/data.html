@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Reddit Sentiment Analysis</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    <h1>Reddit Sentiment Analysis</h1>
+    <!-- Add a label and dropdown for title selection -->
+    <label for="title-select">Select a Title:</label>
+    <select id="title-select" onchange="updateTable()">
+        <option value="">All Titles</option>
+        <option value="What is a tell tale sign that someone is a selfish person?">What is a tell tale sign that someone is a selfish person?</option>
+        <option value="Sailors/people working at sea, what's the most creepy or most amazing sight you witnessed?">Sailors/people working at sea, what's the most creepy or most amazing sight you witnessed?</option>
+    </select>
+    
+    <div>
+        <!-- Render the Plotly chart in a div -->
+        {{ chart_div|safe }}
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th colspan="1">Post ID</th>
+                <th colspan="1">Title</th>
+                <th colspan="1">Sentiment</th>
+                <th colspan="1">Score</th>
+                <th colspan="1">Context</th>
+            </tr>
+        </thead>
+        <!-- Add an id to the tbody so we can access it in the script -->
+        <tbody id="table-body">
+            {% for row in rows %}
+            <tr>
+                <td>{{ row[0] }}</td>
+                <td>{{ row[1] }}</td>
+                <td>{{ row[2] }}</td>
+                <td>{{ row[3] }}</td>
+                <td>{{ row[4] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <script>
+        function updateTable() {
+            // Get the selected value from the dropdown
+            var selectedTitle = document.getElementById("title-select").value;
+
+            // Get all table rows
+            var tableRows = document.getElementById("table-body").getElementsByTagName("tr");
+
+            // Loop through all rows and hide/show based on selected title
+            for (var i = 0; i < tableRows.length; i++) {
+                var rowTitle = tableRows[i].getElementsByTagName("td")[1].innerHTML;
+                if (selectedTitle == "" || selectedTitle == rowTitle) {
+                    tableRows[i].style.display = "";
+                } else {
+                    tableRows[i].style.display = "none";
+                }
+            }
+        }
+    </script>
+</body>
+</html>
