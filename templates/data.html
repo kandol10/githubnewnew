@@ -3,21 +3,74 @@
 <head>
     <title>Reddit Sentiment Analysis</title>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        .box {
+            width: 350px;
+            min-width: 200px;
+            height: 200px;
+            top: -300px;
+            border: 2px solid CornflowerBlue;
+            background-color:CornflowerBlue;
+            display: inline-block;
+            margin: 20px;
+            text-align: center;
+            color: white;
+            font-size: 20px;
+
+        }
+    </style>
 </head>
 <body>
-    <h1>Reddit Sentiment Analysis</h1>
-    <!-- Add a label and dropdown for title selection -->
-    <label for="title-select">Select a Title:</label>
-    <select id="title-select" onchange="updateTable()">
-        <option value="">All Titles</option>
-        <option value="What is a tell tale sign that someone is a selfish person?">What is a tell tale sign that someone is a selfish person?</option>
-        <option value="Sailors/people working at sea, what's the most creepy or most amazing sight you witnessed?">Sailors/people working at sea, what's the most creepy or most amazing sight you witnessed?</option>
-    </select>
-    
-    <div>
-        <!-- Render the Plotly chart in a div -->
+    <h1 style = "text-align:center"> Product Sentiment Analysis </h1>
+    <!-- Add a label and dropdown for Product selection -->
+
+
+   <label for="title-select" class="select-label">Select a Product: </label>
+<select id="title-select" onchange="updateTable()">
+    <option value="">All Titles</option>
+    <option value="What is a tell tale sign that someone is a selfish person?">What is a tell tale sign that someone is a selfish person?</option>
+    <option value="Sailors/people working at sea, what's the most creepy or most amazing sight you witnessed?">Sailors/people working at sea, what's the most creepy or most amazing sight you witnessed?</option>
+</select>
+    <div style=" display: flex;">
+  <div style="text-align:center">
+    <h2> Title </h2>
+    <div class="box-container">
+      <div class="box" id="title-box">
+        Title
+      </div>
+    </div>
+  </div>
+  <div style="text-align:center">
+    <h2> Sentiment </h2>
+    <div class="box-container">
+      <div class="box" id="sentiment-box">
+        Sentiment
+      </div>
+    </div>
+  </div>
+  <div style="text-align:center">
+    <h2> Score </h2>
+    <div class="box-container">
+      <div class="box" id="score-box">
+        Score
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div class="chart" id="my-chart" style = "margin-top: 50px; margin-left:30px; border:2px solid black; width:500px; height:500px; ">
+        <!-- Render the Plotly hart in a div -->
         {{ chart_div|safe }}
     </div>
+
+
+    <div class="chart" id="my-chart" style = "margin-top: -505px; margin-left:650px; border:2px solid black; width:500px; height:500px; ">
+        <!-- Render the Plotly hart in a div -->
+        {{ chart_div2|safe }}
+    </div>
+
+    <div style = "margin-top:100px; width:1500px; margin:auto">
+        <table style="text-align:center;">
     <table>
         <thead>
             <tr>
@@ -25,7 +78,7 @@
                 <th colspan="1">Title</th>
                 <th colspan="1">Sentiment</th>
                 <th colspan="1">Score</th>
-                <th colspan="1">Context</th>
+                <th  colspan="1">Context</th>
             </tr>
         </thead>
         <!-- Add an id to the tbody so we can access it in the script -->
@@ -41,6 +94,7 @@
             {% endfor %}
         </tbody>
     </table>
+</div>
     <script>
         function updateTable() {
             // Get the selected value from the dropdown
@@ -54,6 +108,20 @@
                 var rowTitle = tableRows[i].getElementsByTagName("td")[1].innerHTML;
                 if (selectedTitle == "" || selectedTitle == rowTitle) {
                     tableRows[i].style.display = "";
+                    
+                    // Update title, sentiment, and score boxes
+                    if (rowTitle == selectedTitle) {
+                        document.getElementById("title-box").innerHTML = rowTitle;
+                        var sentimentValue = tableRows[i].getElementsByTagName("td")[2].innerHTML;
+
+// Set the sentiment box content with a plus symbol and the sentiment value
+if (sentimentValue == "positive") {
+    document.getElementById("sentiment-box").innerHTML = "+ Positive";
+} else if (sentimentValue == "negative") {
+    document.getElementById("sentiment-box").innerHTML = "- Negative";
+}
+                        document.getElementById("score-box").innerHTML = tableRows[i].getElementsByTagName("td")[3].innerHTML;
+                    }
                 } else {
                     tableRows[i].style.display = "none";
                 }
@@ -61,4 +129,71 @@
         }
     </script>
 </body>
-</html>
+</html><style>
+    /* Style for the select element */
+    #title-select {
+        top: 50px;
+        padding: 10px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin-left: 20px;
+        width: 1130px;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7'%3E%3Cpath fill='%23a0aec0' d='M6 7l6-7H0z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 10px center;
+        background-size: 12px 7px;
+    }
+    /* Style for the arrow icon */
+    #title-select::-ms-expand {
+        display: none;
+    }
+    #title-select:hover {
+        border-color: #000;
+    }
+    .select-label {
+        margin-left: 20px;
+         font-size: 21px;
+    display: block;
+    margin-bottom: 5px;
+    padding-left: 5px;
+
+
+
+}
+
+</style>
+
+<script>
+    var tableRows = document.getElementById("table-body").getElementsByTagName("tr");
+
+    for (var i = 0; i < tableRows.length; i++) {
+        var sentimentCell = tableRows[i].getElementsByTagName("td")[2];
+
+        if (sentimentCell.innerHTML.toLowerCase().indexOf("positive") > -1) {
+            tableRows[i].classList.add("positive");
+        } else if (sentimentCell.innerHTML.toLowerCase().indexOf("negative") > -1) {
+            tableRows[i].classList.add("negative");
+        } else if (sentimentCell.innerHTML.toLowerCase().indexOf("neutral") > -1) {
+            tableRows[i].classList.add("neutral");
+        }
+    }
+</script>
+<style>
+    .positive {
+        background-color: green;
+    }
+    .negative {
+        background-color: red;
+    }
+    .neutral {
+        background-color: blue;
+    }
+</style>
+
+<style>
+   
+</style>
