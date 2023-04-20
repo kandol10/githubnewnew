@@ -3,6 +3,7 @@ import plotly.graph_objs as go
 import plotly.offline as opy
 from flask import Flask, render_template
 
+
 # Connect to the Azure SQL database
 conn = pyodbc.connect('DRIVER={ODBC Driver 18 for SQL Server};'
                       'SERVER=tcp:finalprojectanalysis1.database.windows.net,1433;'
@@ -24,6 +25,8 @@ app = Flask(__name__)
 def display_data():
     # Execute a SQL query to get the sentiment counts
     cursor.execute('SELECT Sentiment, COUNT(*) AS Count FROM SentimentAnalysis GROUP BY Sentiment')
+
+
     # Fetch all the rows from the query result
     rowsone = cursor.fetchall()
     # Extract the sentiment labels and counts from the rows
@@ -37,12 +40,25 @@ def display_data():
     cursor.execute('SELECT * FROM SentimentAnalysis')
     # Fetch the top 10 rows from the query result
     rows = cursor.fetchmany(10)
+
+    cursor.execute('SELECT Score, Headline FROM SentimentAnalysis ORDER BY Score')
+
+    # Render the template with the data
+    rowstwo = cursor.fetchall()
+
+    scores = [row[1] for row in rowstwo]
+    comments = [row[0] for row in rowstwo]
+
+    data2 = [go.Bar(x=scores, y=comments)]
+    chart_div2 = opy.plot(data2, auto_open=False, output_type='div')
+
     
     # Render the template with the data
-    return render_template('data.html', rows=rows, chart_div=chart_div)
+    # Render the template with the data
+    return render_template('data.html', rows=rows, chart_div=chart_div, chart_div2=chart_div2)
+
+
 
 # Run the Flask app
 if __name__ == '__main__':
     app.run()
-
-    #
