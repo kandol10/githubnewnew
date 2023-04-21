@@ -4,34 +4,73 @@
     <title>Reddit Sentiment Analysis</title>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <style>
-        .box {
-            width: 350px;
-            min-width: 200px;
-            height: 200px;
-            top: -300px;
-            border: 2px solid CornflowerBlue;
-            background-color:CornflowerBlue;
-            display: inline-block;
-            margin: 20px;
-            text-align: center;
-            color: white;
-            font-size: 20px;
+     body {
+  background-image: linear-gradient(lightblue, darkblue);
 
-        }
+}
+      .box {
+  width: 350px;
+  min-width: 200px;
+  height: 200px;
+  top: -300px;
+  border: 2px solid CornflowerBlue;
+  background-color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px;
+  text-align: center;
+  color: black;
+  font-size: 20px;
+  box-shadow: 0 0 20px 5px CornflowerBlue;
+}
+
+<style>
+    .btn-home {
+        background-color: #4CAF50  !important;
+        color: white  !important;;
+        padding: 10px  !important;;
+        border: none  !important;;
+        border-radius: 4px  !important;;
+        cursor: pointer  !important;;
+        margin-right: 10px  !important;;
+    }
+
+    .btn-analysis {
+        background-color: #008CBA;
+        color: white;
+        padding: 10px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        width: 300px;
+        
+    }
+</style>
+
     </style>
 </head>
 <body>
-    <h1 style = "text-align:center"> Product Sentiment Analysis </h1>
-    <!-- Add a label and dropdown for Product selection -->
+    <div style="position: relative; top: 0px;">
+    <button onclick="location.href='#';" class="btn-analysis">Home</button>
+    <button onclick="location.href='./table.html';" class="btn-analysis">Full Analysis</button>
+</div>
+    <h1 style = "text-align:center"> AskReddit Sentiment Analysis </h1>
+    <!-- Add a label and dropdown for AskReddit selection -->
 
-
-   <label for="title-select" class="select-label">Select a Product: </label>
+   <label for="title-select" class="select-label">Select a AskReddit: </label>
 <select id="title-select" onchange="updateTable()">
     <option value="">All Titles</option>
     <option value="What is a tell tale sign that someone is a selfish person?">What is a tell tale sign that someone is a selfish person?</option>
     <option value="Sailors/people working at sea, what's the most creepy or most amazing sight you witnessed?">Sailors/people working at sea, what's the most creepy or most amazing sight you witnessed?</option>
+     <option value="What’s the best song to have sex to?">What’s the best song to have sex to?</option>
+     <option value="In your opinion , what non politician would make the best US president?">In your opinion , what non politician would make the best US president?</option>
+     <option value="What is one song that is socially aceptable to sing badly?">What is one song that is socially aceptable to sing badly?</option>
+      <option value="What’s one item everyone should have in their car?">    What’s one item everyone should have in their car?</option>
+       <option value="Meat lovers would you date a vegan or vegetarian, and vice versa, why/ why not?">   Meat lovers would you date a vegan or vegetarian, and vice versa, why/ why not?</option>
+       <option value="Non-Americans of Reddit, what can you do in your country that Americans can't?">   Non-Americans of Reddit, what can you do in your country that Americans can't?</option>  <option value="To the people who stand up as soon as the plane lands waiting for the doors to open, WHY do you do it?">   To the people who stand up as soon as the plane lands waiting for the doors to open, WHY do you do it?  n</option></option>  <option value="What actor/actress deserves a comeback like the ones Brendan Fraser and Ke Huy Quan have so recently enjoyed?">    What actor/actress deserves a comeback like the ones Brendan Fraser and Ke Huy Quan have so recently enjoyed?</option>
 </select>
-    <div style=" display: flex;">
+<div style=" display: flex;">
   <div style="text-align:center">
     <h2> Title </h2>
     <div class="box-container">
@@ -58,17 +97,41 @@
   </div>
 </div>
 
-    <div class="chart" id="my-chart" style = "margin-top: 50px; margin-left:30px; border:2px solid black; width:500px; height:500px; ">
+<script>
+  const sentimentBox = document.getElementById("sentiment-box");
+
+  if (sentimentBox.textContent.includes("Positive")) {
+    sentimentBox.classList.add("positive-sentiment");
+  } else if (sentimentBox.textContent.includes("Negative")) {
+    sentimentBox.classList.add("negative-sentiment");
+  }
+</script>
+
+<style>
+  .positive-sentiment {
+    background-color: green;
+  }
+  
+  .negative-sentiment {
+    background-color: red;
+  }
+  
+
+</style>
+
+
+    <div class="chart" id="my-chart" style = "margin-top: 50px; margin-left:30px; width:500px; height:500px; ">
         <!-- Render the Plotly hart in a div -->
         {{ chart_div|safe }}
     </div>
 
 
-    <div class="chart" id="my-chart" style = "margin-top: -505px; margin-left:650px; border:2px solid black; width:500px; height:500px; ">
+    <div class="chart" id="my-chart" style = "margin-top: -505px; margin-left:650px;  width:500px; height:500px; ">
         <!-- Render the Plotly hart in a div -->
         {{ chart_div2|safe }}
     </div>
 
+    <div id="myDiv" style="display: none;">
     <div style = "margin-top:100px; width:1500px; margin:auto">
         <table style="text-align:center;">
     <table>
@@ -95,6 +158,7 @@
         </tbody>
     </table>
 </div>
+</div>
     <script>
         function updateTable() {
             // Get the selected value from the dropdown
@@ -115,18 +179,23 @@
                         var sentimentValue = tableRows[i].getElementsByTagName("td")[2].innerHTML;
 
 // Set the sentiment box content with a plus symbol and the sentiment value
+// Set the sentiment box content with a plus, minus or neutral symbol and the sentiment value
 if (sentimentValue == "positive") {
     document.getElementById("sentiment-box").innerHTML = "+ Positive";
 } else if (sentimentValue == "negative") {
     document.getElementById("sentiment-box").innerHTML = "- Negative";
+} else if (sentimentValue == "neutral") {
+    document.getElementById("sentiment-box").innerHTML = "± Neutral";
 }
-                        document.getElementById("score-box").innerHTML = tableRows[i].getElementsByTagName("td")[3].innerHTML;
+document.getElementById("score-box").innerHTML = tableRows[i].getElementsByTagName("td")[3].innerHTML;
+
                     }
                 } else {
                     tableRows[i].style.display = "none";
                 }
             }
         }
+
     </script>
 </body>
 </html><style>
