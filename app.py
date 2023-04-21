@@ -57,6 +57,15 @@ def display_data():
     # Render the template with the data
     return render_template('data.html', rows=rows, chart_div=chart_div, chart_div2=chart_div2)
 
+@app.route('/table.html')
+def display_table():
+    # Execute a SQL query to get all the data from the SentimentAnalysis table
+    cursor.execute('SELECT * FROM SentimentAnalysis')
+    # Fetch all the rows from the query result
+    rows = cursor.fetchall()
+
+    # Render the template with the data
+    return render_template('table.html', rows=rows)
 
 
 # Run the Flask app
