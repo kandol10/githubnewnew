@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Reddit Sentiment Analysis</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+     body {
+  background-image: linear-gradient(lightblue, darkblue);
+
+}
+      .box {
+  width: 350px;
+  min-width: 200px;
+  height: 200px;
+  top: -300px;
+  border: 2px solid CornflowerBlue;
+  background-color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px;
+  text-align: center;
+  color: black;
+  font-size: 20px;
+  box-shadow: 0 0 20px 5px CornflowerBlue;
+}
+
+
+    </style>
+
+<style>
+    .btn-home {
+        background-color: #4CAF50  !important;
+        color: white  !important;;
+        padding: 10px  !important;;
+        border: none  !important;;
+        border-radius: 4px  !important;;
+        cursor: pointer  !important;;
+        margin-right: 10px  !important;;
+    }
+
+    .btn-analysis {
+        background-color: #008CBA;
+        color: white;
+        padding: 10px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        width: 300px;
+        
+    }
+</style>
+
+    </style>
+</head>
+<body>
+     <div style="position: relative; top: 0px;">
+    <button onclick="location.href='./';" class="btn-analysis">Home</button>
+    <button onclick="location.href='./table.html';" class="btn-analysis">Full Analysis</button>
+</div>
+    <h1 style = "text-align:center"> AskReddit Sentiment Analysis </h1>
+    <!-- Add a label and dropdown for AskReddit selection -->
+<body>
+   
+
+
+    <div style = "margin-left: 300px;margin-top:300px; width:2000px; margin:auto">
+        <table style="margin-left: 300px;text-align:center;">
+    <table style = "margin-left:30px; margin-top:30px; font-size:20px">
+        <thead>
+            <tr>
+                <th colspan="1">Post ID</th>
+                <th colspan="1">Title</th>
+                <th colspan="1">Sentiment</th>
+                <th colspan="1">Score</th>
+                <th  colspan="1">Context</th>
+            </tr>
+        </thead>
+        <!-- Add an id to the tbody so we can access it in the script -->
+        <tbody id="table-body">
+            {% for row in rows %}
+            <tr>
+                <td>{{ row[0] }}</td>
+                <td>{{ row[1] }}</td>
+                <td>{{ row[2] }}</td>
+                <td>{{ row[3] }}</td>
+                <td>{{ row[4] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+    <script>
+        function updateTable() {
+            // Get the selected value from the dropdown
+            var selectedTitle = document.getElementById("title-select").value;
+
+            // Get all table rows
+            var tableRows = document.getElementById("table-body").getElementsByTagName("tr");
+
+            // Loop through all rows and hide/show based on selected title
+            for (var i = 0; i < tableRows.length; i++) {
+                var rowTitle = tableRows[i].getElementsByTagName("td")[1].innerHTML;
+                if (selectedTitle == "" || selectedTitle == rowTitle) {
+                    tableRows[i].style.display = "";
+                    
+                    // Update title, sentiment, and score boxes
+                    if (rowTitle == selectedTitle) {
+                        document.getElementById("title-box").innerHTML = rowTitle;
+                        var sentimentValue = tableRows[i].getElementsByTagName("td")[2].innerHTML;
+
+// Set the sentiment box content with a plus symbol and the sentiment value
+if (sentimentValue == "positive") {
+    document.getElementById("sentiment-box").innerHTML = "+ Positive";
+} else if (sentimentValue == "negative") {
+    document.getElementById("sentiment-box").innerHTML = "- Negative";
+}
+                        document.getElementById("score-box").innerHTML = tableRows[i].getElementsByTagName("td")[3].innerHTML;
+                    }
+                } else {
+                    tableRows[i].style.display = "none";
+                }
+            }
+        }
+    </script>
+</body>
+</html><style>
+    /* Style for the select element */
+    #title-select {
+        top: 50px;
+        padding: 10px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin-left: 20px;
+        width: 1130px;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7'%3E%3Cpath fill='%23a0aec0' d='M6 7l6-7H0z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 10px center;
+        background-size: 12px 7px;
+    }
+    /* Style for the arrow icon */
+    #title-select::-ms-expand {
+        display: none;
+    }
+    #title-select:hover {
+        border-color: #000;
+    }
+    .select-label {
+        margin-left: 20px;
+         font-size: 21px;
+    display: block;
+    margin-bottom: 5px;
+    padding-left: 5px;
+
+
+
+}
+
+</style>
+
+<script>
+    var tableRows = document.getElementById("table-body").getElementsByTagName("tr");
+
+    for (var i = 0; i < tableRows.length; i++) {
+        var sentimentCell = tableRows[i].getElementsByTagName("td")[2];
+
+        if (sentimentCell.innerHTML.toLowerCase().indexOf("positive") > -1) {
+            tableRows[i].classList.add("positive");
+        } else if (sentimentCell.innerHTML.toLowerCase().indexOf("negative") > -1) {
+            tableRows[i].classList.add("negative");
+        } else if (sentimentCell.innerHTML.toLowerCase().indexOf("neutral") > -1) {
+            tableRows[i].classList.add("neutral");
+        }
+    }
+</script>
+<style>
+    .positive {
+        background-color: green;
+    }
+    .negative {
+        background-color: red;
+    }
+    .neutral {
+        background-color: blue;
+    }
+</style>
+
+<style>
+   
+</style>
